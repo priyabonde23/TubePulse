@@ -16,18 +16,24 @@ import { TopicCloud } from '@/components/TopicCloud';
 import { CommentExplorer } from '@/components/CommentExplorer';
 import { CustomAnalysisTab } from '@/components/CustomAnalysisTab';
 import { ComparisonMode } from '@/components/ComparisonMode';
+import { ChannelSpyTab } from '@/components/ChannelSpyTab';
+import { VoiceBriefingPlayer } from '@/components/VoiceBriefingPlayer';
+import { ViralTitleGenerator } from '@/components/ViralTitleGenerator';
+import { SponsorValuationCard } from '@/components/SponsorValuationCard';
+import { GeoSentimentMap } from '@/components/GeoSentimentMap';
 import { SettingsModal } from '@/components/SettingsModal';
 import { HelpModal } from '@/components/HelpModal';
 import { ExportReportModal } from '@/components/ExportReportModal';
 import { AuthModal } from '@/components/AuthModal';
 import { HistoryDrawerModal } from '@/components/HistoryDrawerModal';
 import { AuthGate } from '@/components/AuthGate';
+import { AiAgentWidget } from '@/components/AiAgentWidget';
 import { getCurrentUser, logoutUser, saveAnalysisToHistory, getUserHistory, deleteHistoryItem } from '@/lib/authService';
 import { VideoAnalysisResult, CustomAnalysisResult, ComparisonBattleResult, User, SavedAnalysis } from '@/types';
 import { AlertCircle, BarChart2 } from 'lucide-react';
 
 export default function Home() {
-  const [activeMode, setActiveMode] = useState<'youtube' | 'compare' | 'custom'>('youtube');
+  const [activeMode, setActiveMode] = useState<'youtube' | 'compare' | 'channel' | 'custom'>('youtube');
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -219,7 +225,7 @@ export default function Home() {
       <main className="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
         {/* Error Alert */}
         {errorMessage && (
-          <div className="max-w-3xl mx-auto p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-between gap-3 text-rose-300 text-xs sm:text-sm animate-in fade-in print:hidden">
+          <div className="max-w-3xl mx-auto p-4 rounded-2xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-between gap-3 text-rose-300 text-xs sm:text-sm animate-in fade-in print:hidden shadow-lg shadow-rose-500/10">
             <div className="flex items-center gap-2">
               <AlertCircle className="w-4 h-4 text-rose-400 flex-shrink-0" />
               <span>{errorMessage}</span>
@@ -250,6 +256,12 @@ export default function Home() {
           </div>
         )}
 
+        {activeMode === 'channel' && (
+          <div className="print:hidden">
+            <ChannelSpyTab />
+          </div>
+        )}
+
         {activeMode === 'custom' && (
           <div className="print:hidden">
             <CustomAnalysisTab onAnalyzeCustom={handleAnalyzeCustom} isLoading={isLoading} />
@@ -257,8 +269,8 @@ export default function Home() {
         )}
 
         {/* Results Dashboard Section for Single / Custom Mode */}
-        {activeMode !== 'compare' && currentResult && (
-          <section className="space-y-6 animate-in fade-in duration-500">
+        {activeMode !== 'compare' && activeMode !== 'channel' && currentResult && (
+          <section className="space-y-7 animate-in fade-in duration-500">
             {/* Header Video / Dataset Card */}
             {activeMode === 'youtube' && youtubeResult && (
               <VideoInfoCard
@@ -269,10 +281,10 @@ export default function Home() {
             )}
 
             {activeMode === 'custom' && customResult && (
-              <div className="w-full bg-dark-surface border border-dark-border rounded-2xl p-5 sm:p-6 shadow-xl flex items-center justify-between flex-wrap gap-4">
+              <div className="w-full bg-dark-surface/90 border border-dark-border/80 rounded-3xl p-6 sm:p-7 shadow-2xl backdrop-blur-xl flex items-center justify-between flex-wrap gap-4">
                 <div className="flex items-center gap-3">
-                  <div className="p-3 rounded-xl bg-brand-500/10 border border-brand-500/20 text-brand-400">
-                    <BarChart2 className="w-6 h-6" />
+                  <div className="p-3.5 rounded-2xl bg-brand-500/10 border border-brand-500/20 text-brand-400">
+                    <BarChart2 className="w-7 h-7" />
                   </div>
                   <div>
                     <h2 className="text-xl font-bold text-white">{customResult.title}</h2>
@@ -284,11 +296,19 @@ export default function Home() {
 
                 <button
                   onClick={() => setIsExportOpen(true)}
-                  className="px-4 py-2 text-xs font-semibold bg-dark-card hover:bg-dark-border/80 text-white border border-dark-border rounded-xl transition-all shadow-sm print:hidden"
+                  className="px-5 py-2.5 text-xs font-bold bg-dark-card hover:bg-dark-border text-white border border-dark-border rounded-xl transition-all shadow-md print:hidden"
                 >
                   Export Report
                 </button>
               </div>
+            )}
+
+            {/* 🎙️ 1. AI Voice Audio Briefing (Podcast Mode) */}
+            {currentResult.voiceBriefing && (
+              <VoiceBriefingPlayer
+                briefing={currentResult.voiceBriefing}
+                title={'video' in currentResult ? currentResult.video.title : currentResult.title}
+              />
             )}
 
             {/* Side-by-Side Gauges: Sentiment Gauge + Emotion Radar */}
@@ -297,9 +317,24 @@ export default function Home() {
               <EmotionRadar emotions={currentResult.emotions} />
             </div>
 
+            {/* 🎯 2. Viral Title & Thumbnail CTR Generator */}
+            {currentResult.viralTitles && currentResult.viralTitles.length > 0 && (
+              <ViralTitleGenerator titles={currentResult.viralTitles} />
+            )}
+
+            {/* 💸 3. Creator Sponsor Valuation & ROI Calculator */}
+            {currentResult.sponsorValuation && (
+              <SponsorValuationCard valuation={currentResult.sponsorValuation} />
+            )}
+
             {/* ABSA: Aspect-Based Sentiment Matrix */}
             {currentResult.aspects && currentResult.aspects.length > 0 && (
               <AspectMatrix aspects={currentResult.aspects} />
+            )}
+
+            {/* 🌍 4. Geo-Sentiment & Regional Audience Breakdown */}
+            {currentResult.geoSentiment && currentResult.geoSentiment.length > 0 && (
+              <GeoSentimentMap geoData={currentResult.geoSentiment} />
             )}
 
             {/* Virality & Retention Predictor */}
@@ -343,16 +378,19 @@ export default function Home() {
         )}
       </main>
 
+      {/* Floating AI Agent Widget (Copilot) */}
+      <AiAgentWidget analysisData={currentResult} />
+
       {/* Footer */}
-      <footer className="w-full border-t border-dark-border/60 bg-dark-surface/50 py-6 mt-12 print:hidden">
+      <footer className="w-full border-t border-dark-border/60 bg-dark-surface/60 backdrop-blur-xl py-6 mt-12 print:hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-dark-muted">
           <div className="flex items-center gap-2">
-            <span className="font-bold text-white">TubePulse AI 3.0 Pro SaaS</span>
+            <span className="font-extrabold text-white">TubePulse AI Pro SaaS</span>
             <span>•</span>
-            <span>Video & Social Sentiment Intelligence</span>
+            <span>Video & Social Sentiment Intelligence Platform</span>
           </div>
           <div className="flex items-center gap-4">
-            <span>Logged in as <strong>{user.name}</strong></span>
+            <span>Powered by <strong>PulseAgent AI</strong>, ABSA Matrix & Voice Briefing</span>
           </div>
         </div>
       </footer>

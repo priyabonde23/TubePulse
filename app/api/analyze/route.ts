@@ -1,19 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { fetchYouTubeData } from '@/lib/youtubeService';
-import { calculateOverallSentiment, analyzeSentiment } from '@/lib/nlpEngine';
-import { calculateEmotionBreakdown, classifyEmotion, detectIsQuestion } from '@/lib/emotionClassifier';
+import { analyzeSentiment, calculateOverallSentiment } from '@/lib/nlpEngine';
+import { classifyEmotion, calculateEmotionBreakdown } from '@/lib/emotionClassifier';
 import { extractTopics } from '@/lib/topicExtractor';
 import { generateAiSummary } from '@/lib/aiInsights';
-import { calculateCommunityHealth, extractTimestampPoints, evaluateSafety, extractTimestamp } from '@/lib/toxicityEngine';
+import { evaluateSafety, calculateCommunityHealth, extractTimestamp, extractTimestampPoints } from '@/lib/toxicityEngine';
 import { extractAspectBreakdown } from '@/lib/aspectEngine';
 import { calculateViralityMetrics } from '@/lib/viralityEngine';
 import { generateSentimentDrift } from '@/lib/timeDriftEngine';
-import { CommentItem, VideoAnalysisResult, CustomAnalysisResult, ComparisonBattleResult } from '@/types';
+import { generateVoiceBriefing } from '@/lib/voiceBriefingEngine';
+import { generateViralTitles } from '@/lib/viralTitleEngine';
+import { calculateSponsorValuation } from '@/lib/sponsorValuationEngine';
+import { calculateGeoSentiment } from '@/lib/geoSentimentEngine';
+import { VideoAnalysisResult, CustomAnalysisResult, ComparisonBattleResult, CommentItem } from '@/types';
 
-async function processSingleVideo(url: string, apiKey?: string): Promise<VideoAnalysisResult> {
-  const { video, comments } = await fetchYouTubeData(url, apiKey);
+async function processSingleVideo(inputUrl: string, apiKey?: string): Promise<VideoAnalysisResult> {
+  const { video, comments } = await fetchYouTubeData(inputUrl, apiKey);
+
   const sentiment = calculateOverallSentiment(comments);
-  const emotions = calculateEmotionBreakdown(comments.map(c => c.emotion));
+  const emotionsList = comments.map(c => c.emotion);
+  const emotions = calculateEmotionBreakdown(emotionsList);
   const topics = extractTopics(comments);
   const summary = generateAiSummary(video.title, comments, sentiment, emotions, topics);
   const health = calculateCommunityHealth(comments);
@@ -21,6 +27,10 @@ async function processSingleVideo(url: string, apiKey?: string): Promise<VideoAn
   const aspects = extractAspectBreakdown(comments);
   const virality = calculateViralityMetrics(video, sentiment, emotions);
   const drift = generateSentimentDrift(sentiment);
+  const voiceBriefing = generateVoiceBriefing(video.title, sentiment, emotions, summary, aspects);
+  const viralTitles = generateViralTitles(video.title, topics, summary);
+  const sponsorValuation = calculateSponsorValuation(video, sentiment, health);
+  const geoSentiment = calculateGeoSentiment(sentiment);
 
   return {
     video,
@@ -34,6 +44,10 @@ async function processSingleVideo(url: string, apiKey?: string): Promise<VideoAn
     aspects,
     virality,
     drift,
+    voiceBriefing,
+    viralTitles,
+    sponsorValuation,
+    geoSentiment,
     totalAnalyzed: comments.length
   };
 }
@@ -41,9 +55,9 @@ async function processSingleVideo(url: string, apiKey?: string): Promise<VideoAn
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { url, apiKey, customText, customComments, title, isCompare, urlA, urlB } = body;
+    const { isCompare, urlA, urlB, url, customComments, customText, title, apiKey } = body;
 
-    // Mode 1: Side-by-Side Video Battle / Comparison Mode
+    // 1. Comparison Mode
     if (isCompare && urlA && urlB) {
       const [resA, resB] = await Promise.all([
         processSingleVideo(urlA, apiKey),
@@ -51,41 +65,25 @@ export async function POST(req: NextRequest) {
       ]);
 
       const delta = resA.sentiment.overallScore - resB.sentiment.overallScore;
-      let winner: 'videoA' | 'videoB' | 'tie' = 'tie';
-      if (delta > 2) winner = 'videoA';
-      else if (delta < -2) winner = 'videoB';
+      const winner = delta > 0 ? 'videoA' : delta < 0 ? 'videoB' : 'tie';
 
-      const winnerTitle = winner === 'videoA' ? resA.video.title : (winner === 'videoB' ? resB.video.title : 'Both Videos');
       const verdictSummary = winner === 'tie'
-        ? `Both videos received virtually identical audience sentiment (${resA.sentiment.overallScore}/100 vs ${resB.sentiment.overallScore}/100).`
-        : `"${winnerTitle}" outperformed the competition by +${Math.abs(delta)} net points in overall audience positivity and reception.`;
+        ? 'Both videos received virtually identical positive viewer response across key criteria.'
+        : winner === 'videoA'
+          ? `"${resA.video.title}" outperformed "${resB.video.title}" with a +${Math.abs(delta)} net audience satisfaction lead.`
+          : `"${resB.video.title}" outperformed "${resA.video.title}" with a +${Math.abs(delta)} net audience satisfaction lead.`;
 
-      const aspectScores = [
-        {
-          aspect: 'Net Sentiment Score',
-          scoreA: resA.sentiment.overallScore,
-          scoreB: resB.sentiment.overallScore,
-          winner: (resA.sentiment.overallScore > resB.sentiment.overallScore ? 'A' : (resB.sentiment.overallScore > resA.sentiment.overallScore ? 'B' : 'Tie')) as 'A' | 'B' | 'Tie'
-        },
-        {
-          aspect: 'Audience Hype & Energy',
-          scoreA: resA.emotions.hype,
-          scoreB: resB.emotions.hype,
-          winner: (resA.emotions.hype > resB.emotions.hype ? 'A' : (resB.emotions.hype > resA.emotions.hype ? 'B' : 'Tie')) as 'A' | 'B' | 'Tie'
-        },
-        {
-          aspect: 'Community Joy / Approval',
-          scoreA: resA.emotions.joy,
-          scoreB: resB.emotions.joy,
-          winner: (resA.emotions.joy > resB.emotions.joy ? 'A' : (resB.emotions.joy > resA.emotions.joy ? 'B' : 'Tie')) as 'A' | 'B' | 'Tie'
-        },
-        {
-          aspect: 'Community Safety & Cleanliness',
-          scoreA: resA.health.communityHealthScore,
-          scoreB: resB.health.communityHealthScore,
-          winner: (resA.health.communityHealthScore > resB.health.communityHealthScore ? 'A' : (resB.health.communityHealthScore > resA.health.communityHealthScore ? 'B' : 'Tie')) as 'A' | 'B' | 'Tie'
-        }
-      ];
+      const aspectScores = (resA.aspects || []).map(a => {
+        const matchingB = (resB.aspects || []).find(b => b.aspect === a.aspect);
+        const scoreA = a.overallScore;
+        const scoreB = matchingB ? matchingB.overallScore : 75;
+        return {
+          aspect: a.aspect,
+          scoreA,
+          scoreB,
+          winner: (scoreA > scoreB ? 'A' : scoreB > scoreA ? 'B' : 'Tie') as 'A' | 'B' | 'Tie'
+        };
+      });
 
       const battleResult: ComparisonBattleResult = {
         videoA: resA,
@@ -96,62 +94,78 @@ export async function POST(req: NextRequest) {
         aspectScores
       };
 
-      return NextResponse.json({ success: true, mode: 'compare', data: battleResult });
+      return NextResponse.json({ success: true, data: battleResult });
     }
 
-    // Mode 2: Custom Text or CSV Comments Analysis
-    if (customComments && Array.isArray(customComments) && customComments.length > 0) {
-      const processed: CommentItem[] = customComments.map((text: string, idx: number) => {
-        const sentimentRes = analyzeSentiment(text);
-        const emotionRes = classifyEmotion(text, sentimentRes.score);
-        const isQuestion = detectIsQuestion(text);
-        const safety = evaluateSafety(text);
-        const ts = extractTimestamp(text);
+    // 2. Custom Text / CSV Mode
+    if (customComments || customText) {
+      let rawList: { text: string; author?: string }[] = [];
 
+      if (Array.isArray(customComments)) {
+        rawList = customComments.map((t: string, i: number) => ({
+          text: t,
+          author: `Feedback Author #${i + 1}`
+        }));
+      } else if (typeof customText === 'string') {
+        rawList = customText
+          .split('\n')
+          .map(l => l.trim())
+          .filter(l => l.length > 0)
+          .map((t, i) => ({ text: t, author: `Customer #${i + 1}` }));
+      }
+
+      if (rawList.length === 0) {
+        return NextResponse.json({ success: false, error: 'No valid comments found in input text' }, { status: 400 });
+      }
+
+      const comments: CommentItem[] = rawList.map((c, i) => {
+        const sentimentRes = analyzeSentiment(c.text);
+        const emotionRes = classifyEmotion(c.text, sentimentRes.score);
+        const safety = evaluateSafety(c.text);
+        const ts = extractTimestamp(c.text);
         return {
-          id: `custom-${idx + 1}`,
-          author: `Reviewer #${idx + 1}`,
-          text,
+          id: `cust-${i}`,
+          author: c.author || `User #${i + 1}`,
+          text: c.text,
           likes: Math.floor(Math.random() * 20),
-          publishedAt: 'Recently',
+          publishedAt: new Date().toISOString(),
           sentiment: sentimentRes.sentiment,
           sentimentScore: sentimentRes.score,
           emotion: emotionRes.emotion,
           emotionScore: emotionRes.score,
-          isQuestion,
           isToxic: safety.isToxic,
           isSpam: safety.isSpam,
           timestamp: ts.timestamp
         };
       });
 
-      const sentiment = calculateOverallSentiment(processed);
-      const emotions = calculateEmotionBreakdown(processed.map(c => c.emotion));
-      const topics = extractTopics(processed);
-      const summary = generateAiSummary(title || 'Custom Feedback Dataset', processed, sentiment, emotions, topics);
-      const health = calculateCommunityHealth(processed);
-      const timestamps = extractTimestampPoints(processed);
-      const aspects = extractAspectBreakdown(processed);
+      const sentiment = calculateOverallSentiment(comments);
+      const emotionsList = comments.map(c => c.emotion);
+      const emotions = calculateEmotionBreakdown(emotionsList);
+      const topics = extractTopics(comments);
+      const projectTitle = title || 'Custom Feedback Dataset';
+      const summary = generateAiSummary(projectTitle, comments, sentiment, emotions, topics);
+      const health = calculateCommunityHealth(comments);
+      const timestamps = extractTimestampPoints(comments);
+      const aspects = extractAspectBreakdown(comments);
       const virality = calculateViralityMetrics(
-        {
-          id: 'custom-ds',
-          title: title || 'Custom Dataset',
-          channelTitle: 'Internal Data',
-          thumbnail: '',
-          viewCount: processed.length * 100,
-          likeCount: processed.length * 15,
-          commentCount: processed.length,
-          publishedAt: new Date().toISOString(),
-          url: ''
-        },
+        { id: 'custom', title: projectTitle, channelTitle: 'User Upload', thumbnail: '', viewCount: 10000, likeCount: 500, commentCount: comments.length, publishedAt: new Date().toISOString(), url: '' },
         sentiment,
         emotions
       );
       const drift = generateSentimentDrift(sentiment);
+      const voiceBriefing = generateVoiceBriefing(projectTitle, sentiment, emotions, summary, aspects);
+      const viralTitles = generateViralTitles(projectTitle, topics, summary);
+      const sponsorValuation = calculateSponsorValuation(
+        { id: 'custom', title: projectTitle, channelTitle: 'Custom', thumbnail: '', viewCount: 50000, likeCount: 1000, commentCount: comments.length, publishedAt: '', url: '' },
+        sentiment,
+        health
+      );
+      const geoSentiment = calculateGeoSentiment(sentiment);
 
-      const result: CustomAnalysisResult = {
-        title: title || 'Custom Feedback Analysis',
-        comments: processed,
+      const customResult: CustomAnalysisResult = {
+        title: projectTitle,
+        comments,
         sentiment,
         emotions,
         topics,
@@ -161,26 +175,28 @@ export async function POST(req: NextRequest) {
         aspects,
         virality,
         drift,
-        totalAnalyzed: processed.length
+        voiceBriefing,
+        viralTitles,
+        sponsorValuation,
+        geoSentiment,
+        totalAnalyzed: comments.length
       };
 
-      return NextResponse.json({ success: true, mode: 'custom', data: result });
+      return NextResponse.json({ success: true, data: customResult });
     }
 
-    // Mode 3: YouTube Video Analysis (Default)
+    // 3. Single YouTube Video Mode
     if (!url) {
-      return NextResponse.json(
-        { success: false, error: 'Please provide a valid YouTube URL or Demo selection.' },
-        { status: 400 }
-      );
+      return NextResponse.json({ success: false, error: 'URL or Search Query is required' }, { status: 400 });
     }
 
-    const result = await processSingleVideo(url, apiKey);
-    return NextResponse.json({ success: true, mode: 'youtube', data: result });
+    const singleResult = await processSingleVideo(url, apiKey);
+    return NextResponse.json({ success: true, data: singleResult });
+
   } catch (error: any) {
-    console.error('Analysis error:', error);
+    console.error('Analyze API Error:', error);
     return NextResponse.json(
-      { success: false, error: error.message || 'Failed to process analysis' },
+      { success: false, error: error.message || 'Internal server error while processing feedback' },
       { status: 500 }
     );
   }

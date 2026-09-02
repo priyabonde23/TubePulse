@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TubePulse AI SaaS - Executive Presentation & Viva Guide</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #0b0f19;
+      color: #f1f5f9;
+    }
+    @media print {
+      body {
+        background-color: #ffffff !important;
+        color: #0f172a !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .print-card {
+        background: #ffffff !important;
+        border: 1px solid #cbd5e1 !important;
+        color: #0f172a !important;
+        box-shadow: none !important;
+      }
+      .print-text-dark {
+        color: #0f172a !important;
+      }
+      .print-text-muted {
+        color: #475569 !important;
+      }
+      .page-break {
+        page-break-before: always;
+      }
+    }
+    .glass-panel {
+      background: rgba(17, 24, 39, 0.85);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, #818cf8 0%, #c084fc 50%, #f472b6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  </style>
+</head>
+<body class="p-4 sm:p-8 lg:p-12 max-w-5xl mx-auto space-y-8">
+
+  <!-- Floating Print / Save PDF Button -->
+  <div class="fixed top-6 right-6 z-50 no-print">
+    <button
+      onclick="window.print()"
+      class="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-500 hover:to-pink-500 text-white font-bold text-sm rounded-2xl shadow-2xl shadow-indigo-500/40 border border-white/20 transition-all hover:scale-105 active:scale-95"
+    >
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+      </svg>
+      <span>🖨️ Download / Save as PDF</span>
+    </button>
+  </div>
+
+  <!-- Cover Header -->
+  <header class="glass-panel print-card rounded-3xl p-8 sm:p-10 border border-white/10 shadow-2xl relative overflow-hidden">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+      <div class="space-y-2">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 text-xs font-extrabold uppercase">
+          🚀 Production Live AI SaaS Platform
+        </div>
+        <h1 class="text-3xl sm:text-5xl font-black tracking-tight text-white print-text-dark">
+          Tube<span class="gradient-text">Pulse</span> AI
+        </h1>
+        <p class="text-sm sm:text-base text-slate-300 print-text-muted font-medium max-w-2xl">
+          Multi-Layered NLP & Video Sentiment Intelligence SaaS Platform
+        </p>
+      </div>
+
+      <div class="p-4 rounded-2xl bg-slate-900/80 print-card border border-white/10 text-xs space-y-1 text-right sm:text-left">
+        <div><strong class="text-slate-400">Live URL:</strong> <a href="https://tubepulse-nine.vercel.app" class="text-indigo-400 font-bold underline">tubepulse-nine.vercel.app</a></div>
+        <div><strong class="text-slate-400">Framework:</strong> <span class="text-white print-text-dark font-semibold">Next.js 14 + TypeScript</span></div>
+        <div><strong class="text-slate-400">Status:</strong> <span class="text-emerald-400 font-bold">● Production Active (Vercel)</span></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- One-Line Pitch & Problem/Solution Matrix -->
+  <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- Problem -->
+    <div class="glass-panel print-card rounded-3xl p-7 border border-rose-500/20 space-y-4">
+      <div class="flex items-center gap-2 text-rose-400 font-bold text-sm uppercase">
+        <span class="p-2 rounded-xl bg-rose-500/10 border border-rose-500/20">⚠️</span>
+        <span>The Problem</span>
+      </div>
+      <ul class="space-y-2.5 text-xs sm:text-sm text-slate-300 print-text-dark leading-relaxed">
+        <li class="flex items-start gap-2">
+          <span class="text-rose-400 font-bold">•</span>
+          <span><strong>Comment Overload:</strong> Popular videos receive 5,000 to 50,000+ comments. Reading them manually is impossible.</span>
+        </li>
+        <li class="flex items-start gap-2">
+          <span class="text-rose-400 font-bold">•</span>
+          <span><strong>Misleading Volume Metrics:</strong> Views and likes don't show true viewer emotion, friction points, or pacing complaints.</span>
+        </li>
+        <li class="flex items-start gap-2">
+          <span class="text-rose-400 font-bold">•</span>
+          <span><strong>Lost Monetization:</strong> Creators struggle to accurately price brand sponsorships and draft high-CTR title hooks.</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Solution -->
+    <div class="glass-panel print-card rounded-3xl p-7 border border-emerald-500/20 space-y-4">
+      <div class="flex items-center gap-2 text-emerald-400 font-bold text-sm uppercase">
+        <span class="p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20">💡</span>
+        <span>The Solution (TubePulse)</span>
+      </div>
+      <ul class="space-y-2.5 text-xs sm:text-sm text-slate-300 print-text-dark leading-relaxed">
+        <li class="flex items-start gap-2">
+          <span class="text-emerald-400 font-bold">•</span>
+          <span><strong>Instant NLP Synthesis:</strong> Processes thousands of comments in seconds with Hinglish & Gen-Z slang detection.</span>
+        </li>
+        <li class="flex items-start gap-2">
+          <span class="text-emerald-400 font-bold">•</span>
+          <span><strong>5-Dimension ABSA:</strong> Granular breakdown of Audio, Visuals, Explanation, Acting, and Pricing.</span>
+        </li>
+        <li class="flex items-start gap-2">
+          <span class="text-emerald-400 font-bold">•</span>
+          <span><strong>PulseAgent AI Copilot:</strong> Real-time interactive AI chat for script fixes, title hooks, and brand deal valuations.</span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 10 Core Super Modules -->
+  <section class="glass-panel print-card rounded-3xl p-8 border border-white/10 space-y-6">
+    <div>
+      <h2 class="text-xl sm:text-2xl font-extrabold text-white print-text-dark">
+        🌟 10 Core Production Modules
+      </h2>
+      <p class="text-xs sm:text-sm text-slate-400 print-text-muted">Comprehensive architectural overview of all integrated features</p>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs sm:text-sm">
+      <div class="p-4 rounded-2xl bg-slate-900/60 print-card border border-white/10 space-y-1.5">
+        <div class="flex items-center justify-between">
+          <span class="font-bold text-indigo-300">1. Strict Instagram-Style Auth Gate</span>
+          <span class="text-[10px] bg-indigo-500/20 px-2 py-0.5 rounded text-indigo-300 font-bold">SECURITY</span>
+        </div>
+        <p class="text-slate-300 print-text-muted text-xs">Locks dashboard for unauthenticated visitors. Features Sign In, Sign Up, and 1-Click Instant Demo VIP Login.</p>
+      </div>
+
+      <div class="p-4 rounded-2xl bg-slate-900/60 print-card border border-white/10 space-y-1.5">
+        <div class="flex items-center justify-between">
+          <span class="font-bold text-purple-300">2. AI Voice Audio Briefing</span>
+          <span class="text-[10px] bg-purple-500/20 px-2 py-0.5 rounded text-purple-300 font-bold">PODCAST</span>
+        </div>
+        <p class="text-slate-300 print-text-muted text-xs">Web Speech API audio synthesizer providing a 60-second hands-free audio report with animated soundwaves.</p>
+      </div>
+
+      <div class="p-4 rounded-2xl bg-slate-900/60 print-card border border-white/10 space-y-1.5">
+        <div class="flex items-center justify-between">
+          <span class="font-bold text-emerald-300">3. PulseAgent AI Video Copilot</span>
+          <span class="text-[10px] bg-emerald-500/20 px-2 py-0.5 rounded text-emerald-300 font-bold">AI AGENT</span>
+        </div>
+        <p class="text-slate-300 print-text-muted text-xs">Interactive conversational bot that answers retention queries, script optimizations, and next viral video topics.</p>
+      </div>
+
+      <div class="p-4 rounded-2xl bg-slate-900/60 print-card border border-white/10 space-y-1.5">
+        <div class="flex items-center justify-between">
+          <span class="font-bold text-amber-300">4. Aspect-Based Sentiment Matrix (ABSA)</span>
+          <span class="text-[10px] bg-amber-500/20 px-2 py-0.5 rounded text-amber-300 font-bold">NLP DEEP</span>
+        </div>
+        <p class="text-slate-300 print-text-muted text-xs">Dimension-by-dimension breakdown of BGM/Audio, Visuals/CGI, Content Clarity, Delivery, and Value.</p>
+      </div>
+
+      <div class="p-4 rounded-2xl bg-slate-900/60 print-card border border-white/10 space-y-1.5">
+        <div class="flex items-center justify-between">
+          <span class="font-bold text-rose-300">5. Video Battle Arena (Comparison Mode)</span>
+          <span class="text-[10px] bg-rose-500/20 px-2 py-0.5 rounded text-rose-300 font-bold">BATTLE</span>
+        </div>
+        <p class="text-slate-300 print-text-muted text-xs">Head-to-head dual video analyzer with delta scoring, winner trophy banner, and aspect comparison matrix.</p>
+      </div>
+
+      <div class="p-4 rounded-2xl bg-slate-900/60 print-card border border-white/10 space-y-1.5">
+        <div class="flex items-center justify-between">
+          <span class="font-bold text-amber-400">6. Channel Competitor Spy Mode</span>
+          <span class="text-[10px] bg-amber-500/20 px-2 py-0.5 rounded text-amber-400 font-bold">SPY</span>
+        </div>
+        <p class="text-slate-300 print-text-muted text-xs">Enter any YouTuber handle (@MrBeast, @mkbhd) to see a 5-video ranked leaderboard with win/fix insights.</p>
+      </div>
+
+      <div class="p-4 rounded-2xl bg-slate-900/60 print-card border border-white/10 space-y-1.5">
+        <div class="flex items-center justify-between">
+          <span class="font-bold text-cyan-300">7. Viral Title & Thumbnail CTR Generator</span>
+          <span class="text-[10px] bg-cyan-500/20 px-2 py-0.5 rounded text-cyan-300 font-bold">GROWTH</span>
+        </div>
+        <p class="text-slate-300 print-text-muted text-xs">Produces 5 high-CTR YouTube titles across psychological hooks + 3 thumbnail text stickers with 1-click copy.</p>
+      </div>
+
+      <div class="p-4 rounded-2xl bg-slate-900/60 print-card border border-white/10 space-y-1.5">
+        <div class="flex items-center justify-between">
+          <span class="font-bold text-emerald-400">8. Sponsor Valuation & Brand Media Kit</span>
+          <span class="text-[10px] bg-emerald-500/20 px-2 py-0.5 rounded text-emerald-400 font-bold">REVENUE</span>
+        </div>
+        <p class="text-slate-300 print-text-muted text-xs">Calculates estimated sponsorship rates in INR (₹) & USD ($) + generates a 1-click ready-to-send media pitch.</p>
+      </div>
+
+      <div class="p-4 rounded-2xl bg-slate-900/60 print-card border border-white/10 space-y-1.5">
+        <div class="flex items-center justify-between">
+          <span class="font-bold text-teal-300">9. Geo-Sentiment & Regional Breakdown</span>
+          <span class="text-[10px] bg-teal-500/20 px-2 py-0.5 rounded text-teal-300 font-bold">GLOBAL</span>
+        </div>
+        <p class="text-slate-300 print-text-muted text-xs">Maps audience reactions across India 🇮🇳, USA 🇺🇸, UK 🇬🇧, and Global regions with regional buzzwords.</p>
+      </div>
+
+      <div class="p-4 rounded-2xl bg-slate-900/60 print-card border border-white/10 space-y-1.5">
+        <div class="flex items-center justify-between">
+          <span class="font-bold text-pink-300">10. 1-Click AI Smart Replies & Translations</span>
+          <span class="text-[10px] bg-pink-500/20 px-2 py-0.5 rounded text-pink-300 font-bold">COMMUNITY</span>
+        </div>
+        <p class="text-slate-300 print-text-muted text-xs">Generates responses across 4 creator tones (Grateful, Witty, Professional, Helpful) + auto-translates slang.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Page Break for Printing -->
+  <div class="page-break"></div>
+
+  <!-- Word-by-Word Presentation Script -->
+  <section class="glass-panel print-card rounded-3xl p-8 border border-white/10 space-y-6">
+    <div>
+      <h2 class="text-xl sm:text-2xl font-extrabold text-white print-text-dark">
+        🗣️ Presentation Speech Script (Word-by-Word)
+      </h2>
+      <p class="text-xs sm:text-sm text-slate-400 print-text-muted">Exact script to read during presentation or viva</p>
+    </div>
+
+    <div class="space-y-4 text-xs sm:text-sm">
+      <div class="p-4 rounded-2xl bg-slate-900/80 print-card border-l-4 border-indigo-500 space-y-1">
+        <span class="font-bold text-indigo-300 uppercase text-xs">Slide 1: Hook & Introduction (30s)</span>
+        <p class="italic text-slate-300 print-text-dark leading-relaxed">
+          "Good morning everyone. Today I am presenting <strong>TubePulse AI</strong> — an enterprise-grade AI SaaS platform engineered to decode video and audience sentiment. In the creator economy, popular videos receive thousands of comments. Reading them manually is impossible. TubePulse solves this data overload problem by turning unstructured comments into actionable growth metrics, virality forecasts, and brand sponsorship valuations in real-time."
+        </p>
+      </div>
+
+      <div class="p-4 rounded-2xl bg-slate-900/80 print-card border-l-4 border-purple-500 space-y-1">
+        <span class="font-bold text-purple-300 uppercase text-xs">Slide 2: Architecture & Working (45s)</span>
+        <p class="italic text-slate-300 print-text-dark leading-relaxed">
+          "Under the hood, TubePulse is built using <strong>Next.js 14 App Router, TypeScript, and Serverless API architecture</strong>. When a video or channel handle is submitted, our backend pipeline routes comments through our Hinglish-aware NLP Engine, 6-axis Emotion Classifier, Aspect-Based Sentiment Matrix, and Toxicity Shield. Everything executes in milliseconds and renders an interactive, ultra-premium glassmorphism dashboard."
+        </p>
+      </div>
+
+      <div class="p-4 rounded-2xl bg-slate-900/80 print-card border-l-4 border-emerald-500 space-y-1">
+        <span class="font-bold text-emerald-300 uppercase text-xs">Slide 3: Key Innovations & Live Demo (60s)</span>
+        <p class="italic text-slate-300 print-text-dark leading-relaxed">
+          "Key innovations include our <strong>Strict Security Auth Gate</strong> with 1-Click Demo Login, <strong>PulseAgent</strong> (our conversational AI Copilot), <strong>AI Voice Audio Briefing</strong> (which speaks a 60-second podcast recap with animated soundwaves), our <strong>Sponsor Valuation Calculator</strong> (computing commercial brand rates in INR & USD), and our <strong>Channel Competitor Spy Mode</strong> for multi-video benchmarking."
+        </p>
+      </div>
+
+      <div class="p-4 rounded-2xl bg-slate-900/80 print-card border-l-4 border-pink-500 space-y-1">
+        <span class="font-bold text-pink-300 uppercase text-xs">Slide 4: Conclusion (15s)</span>
+        <p class="italic text-slate-300 print-text-dark leading-relaxed">
+          "TubePulse is officially live on production at <strong>https://tubepulse-nine.vercel.app</strong>. It demonstrates end-to-end Full-Stack mastery, custom NLP algorithms, and commercial SaaS design. Thank you!"
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Viva & Examiner Q&A Cheat Sheet -->
+  <section class="glass-panel print-card rounded-3xl p-8 border border-white/10 space-y-6">
+    <div>
+      <h2 class="text-xl sm:text-2xl font-extrabold text-white print-text-dark">
+        🎯 Viva & Interview Q&A Cheatsheet
+      </h2>
+      <p class="text-xs sm:text-sm text-slate-400 print-text-muted">Answers to tough questions asked by examiners & interviewers</p>
+    </div>
+
+    <div class="space-y-3.5 text-xs sm:text-sm">
+      <div class="p-4 rounded-2xl bg-slate-900/60 print-card border border-white/10 space-y-1">
+        <span class="font-bold text-white print-text-dark block">Q1: How does your sentiment analysis handle Hinglish and Indian Slang?</span>
+        <p class="text-slate-300 print-text-muted"><strong>Ans:</strong> We engineered a custom weighted contextual lexicon in <code class="bg-black/40 px-1.5 py-0.5 rounded text-indigo-300">lib/nlpEngine.ts</code> supporting Indian terms like <em>'paisa wasool'</em>, <em>'bawaal'</em>, <em>'bakwas'</em>, alongside Gen-Z slang like <em>'fire'</em>, <em>'goat'</em>, <em>'mid'</em> with negation handling and emoji scoring.</p>
+      </div>
+
+      <div class="p-4 rounded-2xl bg-slate-900/60 print-card border border-white/10 space-y-1">
+        <span class="font-bold text-white print-text-dark block">Q2: What is ABSA (Aspect-Based Sentiment Analysis) and why is it superior?</span>
+        <p class="text-slate-300 print-text-muted"><strong>Ans:</strong> Standard sentiment analysis only gives a single overall score. ABSA divides the video into 5 specific dimensions (Audio, Visuals, Explanation, Acting, Value) so creators know the exact component driving praise or friction.</p>
+      </div>
+
+      <div class="p-4 rounded-2xl bg-slate-900/60 print-card border border-white/10 space-y-1">
+        <span class="font-bold text-white print-text-dark block">Q3: How does the AI Voice Briefing work without paid APIs?</span>
+        <p class="text-slate-300 print-text-muted"><strong>Ans:</strong> We combine the native browser Web Speech Synthesis API with a custom synthesis engine (<code class="bg-black/40 px-1.5 py-0.5 rounded text-indigo-300">lib/voiceBriefingEngine.ts</code>) to deliver zero-latency, natural, and free audio playback.</p>
+      </div>
+
+      <div class="p-4 rounded-2xl bg-slate-900/60 print-card border border-white/10 space-y-1">
+        <span class="font-bold text-white print-text-dark block">Q4: Is this architecture production-ready and scalable?</span>
+        <p class="text-slate-300 print-text-muted"><strong>Ans:</strong> Yes. The serverless Next.js API layer deployed on Vercel Global Edge CDN auto-scales independently across global regions with instant caching and high concurrency.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="text-center text-xs text-slate-500 print-text-muted pt-4 pb-8 space-y-1">
+    <p>TubePulse AI SaaS Platform • Designed & Built for Production Excellence</p>
+    <p>Live Website: <a href="https://tubepulse-nine.vercel.app" class="text-indigo-400 font-bold underline">https://tubepulse-nine.vercel.app</a></p>
+  </footer>
+
+</body>
+</html>

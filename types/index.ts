@@ -27,7 +27,7 @@ export interface SavedAnalysis {
   positiveRatio: number;
   analyzedAt: string;
   videoUrl: string;
-  mode: 'youtube' | 'compare' | 'custom';
+  mode: 'youtube' | 'compare' | 'custom' | 'channel';
 }
 
 export interface CommentItem {
@@ -141,6 +141,53 @@ export interface DriftDataPoint {
   score: number;
 }
 
+export interface VoiceBriefingData {
+  script: string;
+  durationEst: string;
+  keyHighlights: string[];
+}
+
+export interface ViralTitleHook {
+  title: string;
+  hookType: 'Curiosity 🔍' | 'Controversy ⚡' | 'Extreme Value 💎' | 'Storytelling 📖';
+  estimatedCtr: number;
+  reason: string;
+}
+
+export interface SponsorValuationData {
+  estimatedValueMinINR: number;
+  estimatedValueMaxINR: number;
+  estimatedValueUSD: number;
+  tier: 'High-Demand Commercial Asset ⭐⭐⭐' | 'Solid Growth Niche ⭐⭐' | 'Developing Reach ⭐';
+  cpmRange: string;
+  brandPitchSnippet: string;
+  brandFitCategories: string[];
+}
+
+export interface GeoSentimentItem {
+  country: string;
+  code: string;
+  flag: string;
+  positiveRatio: number;
+  sharePercentage: number;
+  topBuzzword: string;
+  culturalNote: string;
+}
+
+export interface ChannelLeaderboardItem {
+  id: string;
+  title: string;
+  thumbnail: string;
+  views: string;
+  publishedDate: string;
+  sentimentScore: number;
+  positiveRatio: number;
+  verdict: string;
+  topPraise: string;
+  topCriticism: string;
+  viralityBadge: string;
+}
+
 export interface VideoAnalysisResult {
   video: VideoMetadata;
   comments: CommentItem[];
@@ -153,6 +200,10 @@ export interface VideoAnalysisResult {
   aspects: AspectBreakdownItem[];
   virality: ViralityMetrics;
   drift: DriftDataPoint[];
+  voiceBriefing?: VoiceBriefingData;
+  viralTitles?: ViralTitleHook[];
+  sponsorValuation?: SponsorValuationData;
+  geoSentiment?: GeoSentimentItem[];
   totalAnalyzed: number;
 }
 
@@ -168,6 +219,10 @@ export interface CustomAnalysisResult {
   aspects: AspectBreakdownItem[];
   virality: ViralityMetrics;
   drift: DriftDataPoint[];
+  voiceBriefing?: VoiceBriefingData;
+  viralTitles?: ViralTitleHook[];
+  sponsorValuation?: SponsorValuationData;
+  geoSentiment?: GeoSentimentItem[];
   totalAnalyzed: number;
 }
 
